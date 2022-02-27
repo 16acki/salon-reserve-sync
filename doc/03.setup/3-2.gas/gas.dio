@@ -1,0 +1,19 @@
+<mxfile host="65bd71144e">
+    <diagram name="Google Apps Script" id="24SMPLhqkHJa6rmfc9wA">
+        <mxGraphModel dx="852" dy="438" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="fMXv9nJHVBy1iGiTfZ_Z-0"/>
+                <mxCell id="fMXv9nJHVBy1iGiTfZ_Z-1" parent="fMXv9nJHVBy1iGiTfZ_Z-0"/>
+                <mxCell id="fMXv9nJHVBy1iGiTfZ_Z-2" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="fMXv9nJHVBy1iGiTfZ_Z-1" source="fMXv9nJHVBy1iGiTfZ_Z-3" target="fMXv9nJHVBy1iGiTfZ_Z-4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="fMXv9nJHVBy1iGiTfZ_Z-3" value="Google Apps Script" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=5" parent="fMXv9nJHVBy1iGiTfZ_Z-1" vertex="1">
+                    <mxGeometry x="80" y="80" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="fMXv9nJHVBy1iGiTfZ_Z-4" value="Raspberry Pi" style="rounded=0;whiteSpace=wrap;html=1;" parent="fMXv9nJHVBy1iGiTfZ_Z-1" vertex="1">
+                    <mxGeometry x="280" y="80" width="160" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

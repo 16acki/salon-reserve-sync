@@ -1,0 +1,138 @@
+' *********************************************************
+' ログイン
+' *********************************************************
+
+@startuml "login"
+
+box "Google" #e5ffe5
+  participant GAS
+end box
+
+box "Raspberry Pi" #fff2e5
+  participant interceptor
+  participant controller
+  participant service
+  participant jwt
+  participant dao
+  participant XML
+end box
+
+activate GAS
+  GAS -> controller: ログイン要求
+  activate controller
+alt 許可されていないユーザー
+    GAS <-- controller: 応答(401)
+    GAS  -> GAS: 処理終了
+end
+    controller -> service: トークン発行要求
+    activate service
+alt ここでエラーが発生したら、GAS に 500 を応答する。\nGAS 側は処理終了。
+      service -> jwt: トークン発行要求
+      activate jwt
+        jwt -> jwt: 秘密鍵生成
+        jwt -> jwt: トークン生成
+        jwt -> dao: 秘密鍵保存要求
+        activate dao
+          dao -> XML: 秘密鍵保存
+          activate XML
+end
+            dao <-- XML: 保存成功
+          deactivate XML
+          jwt <-- dao: 保存成功
+        deactivate dao
+      service <-- jwt: トークン
+      deactivate jwt
+    controller <-- service: トークン
+    deactivate service
+    GAS <-- controller: 応答(200)\nトークン
+  deactivate controller
+deactivate GAS
+
+@enduml
+
+' *********************************************************
+' 同期
+' *********************************************************
+
+@startuml "sync"
+
+actor お客様 as client
+
+participant 予約サイトA as A
+participant 予約サイトB as B
+
+box "Google" #e5ffe5
+  participant GMail
+  participant GAS
+end box
+
+box "Raspberry Pi" #fff2e5
+  participant interceptor
+  participant controller
+  participant service
+  participant jwt
+  participant scraping
+  participant dao
+  participant XML
+end box
+
+activate client
+  client -> A: 予約する
+deactivate client
+  activate A
+    A -> GMail: 通知
+  deactivate A
+    activate GMail
+      GMail <-- GAS: 監視
+    deactivate GMail
+      activate GAS
+        GAS -> interceptor: メール内容送信
+      activate interceptor
+        interceptor -> service: 認証要求
+        activate service
+          service -> jwt: 認証要求
+          activate jwt
+            jwt -> dao: 秘密鍵要求
+            activate dao
+              dao -> XML: 秘密鍵要求
+              activate XML
+                dao <-- XML: 秘密鍵
+              deactivate XML
+              jwt <-- dao: 秘密鍵
+            deactivate dao
+            jwt -> jwt: 認証
+            alt 認証エラー
+              controller <-- jwt: 業務例外(403)
+              activate controller
+                GAS <-- controller: 応答(403)
+                GAS -> GAS: 処理終了
+            end
+            service <-- jwt: 認証成功
+          deactivate jwt
+            interceptor <-- service: 認証成功
+            interceptor -> controller: 後続処理要求
+      deactivate interceptor
+            controller -> service: 同期要求
+alt ここでエラーが発生したら、GAS に500を応答する。
+              service -> dao: 予約内容保存要求
+              activate dao
+                dao -> XML: 予約内容保存
+                activate XML
+                  dao <-- XML
+                deactivate XML
+              service <-- dao: 保存成功
+              deactivate dao
+            service -> scraping: 同期要求
+            activate scraping
+              B <-- scraping: スクレイピング
+              activate B
+              deactivate B
+end
+              service <-- scraping: 同期成功
+            deactivate scraping
+            controller <-- service: 同期成功
+        deactivate service
+            GAS <-- controller: 応答(200)
+              deactivate controller
+      deactivate GAS
+@enduml
